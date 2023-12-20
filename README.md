@@ -7,19 +7,19 @@ Welcome to the Denoising Approaches repository for Neural Radiance Fields (NeRF)
 
 ### 1. Modify the NeRF Pipeline
 Revolutionize your NeRF pipeline by incorporating advanced techniques:
-- **PDF Sampling:** [Access the Notebook](/CS-BDRP-nerf/tree/master/code_versions/tiny_nerf_pdf_enabled.ipynb)
+- **PDF Sampling:** [Access the Notebook](code_versions/tiny_nerf_pdf_enabled.ipynb)
    - Implement PDF-based sampling to optimize scene reconstruction.
-- **Image Holdout:** [Explore the Notebook](/CS-BDRP-nerf/tree/master/code_versions/tiny_nerf_image_holdouts.ipynb)
+- **Image Holdout:** [Explore the Notebook](code_versions/tiny_nerf_image_holdouts.ipynb)
    - Utilize image holdouts for enhancing NeRF performance.
 
 ### 2. Mathematical Properties
 Uncover the underlying noise properties in NeRF for a deeper understanding:
-- **Examine Noise:** [Dive into the Noise Analysis](/CS-BDRP-nerf/tree/master/examine%20noise)
+- **Examine Noise:** [Dive into the Noise Analysis](/examine%20noise)
    - Explore the mathematical properties inherent in the noise of NeRF.
 
 ### 3. Denoising and General Scripts
 Effortlessly denoise your NeRF outputs and access helpful scripts:
-- **Denoising Output and General Scripts:** [Get Started](/CS-BDRP-nerf/tree/master/general_scripts)
+- **Denoising Output and General Scripts:** [Get Started](/general_scripts)
    - Apply denoising algorithms and find general scripts for optimization and visualization.
 
 Each notebook provides comprehensive insights, implementation details, and execution instructions. Dive into these resources to enhance your understanding and implementation of NeRF denoising techniques.
