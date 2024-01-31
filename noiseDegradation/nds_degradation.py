@@ -8,25 +8,50 @@ def getYchannel(url):
     img = cv2.imread(url)
     img_label = cv2.cvtColor(img,cv2.COLOR_BGR2YCrCb)[:,:,[0]]
     return img_label
+from scipy.stats import skew, kurtosis
+
 def gen_gaussian(major_size, kernel_size, scale=1.0, ratio=1.0, angle=0, norm=True):
 
-    
+    # Desired statistical properties
+    desired_mean = 3.061528275862069
+    desired_std_dev = 10.207202023813368
+    desired_skewness = 6.745085125565042
+    desired_kurtosis = 70.47755010697897
+
     c1, c2 = kernel_size // 2, kernel_size // 2
     sigma1 = major_size // 2 * scale
     sigma2 = sigma1 * ratio
     kernel = np.zeros((kernel_size, kernel_size))
     angle = math.pi * angle / 180.0
+
     for y in range(kernel_size):
         for x in range(kernel_size):
             delta1 = ((x - c1) * math.cos(angle) - (y - c2) * math.sin(angle)) ** 2 / sigma1 ** 2
             delta2 = ((x - c1) * math.sin(angle) + (y - c2) * math.cos(angle)) ** 2 / sigma2 ** 2
             kernel[y][x] = math.exp(-0.5 * (delta1 + delta2))
 
-    if norm:
-        # make sum of each kernel as 1
-        kernel /= kernel.sum()
+    # Normalize to desired mean and standard deviation
+    current_mean = np.mean(kernel)
+    current_std_dev = np.std(kernel)
+    normalized_kernel = (kernel - current_mean) * (desired_std_dev / current_std_dev) + desired_mean
 
-    return kernel
+    # Adjust skewness
+    current_skewness = skew(normalized_kernel.flatten())
+    skewness_diff = desired_skewness - current_skewness
+    normalized_kernel = normalized_kernel + skewness_diff * (normalized_kernel - np.mean(normalized_kernel))
+
+    # Adjust kurtosis
+    current_kurtosis = kurtosis(normalized_kernel.flatten())
+    kurtosis_diff = desired_kurtosis - current_kurtosis
+    normalized_kernel = normalized_kernel + kurtosis_diff * ((normalized_kernel - np.mean(normalized_kernel))**2 - current_std_dev**2)
+
+    if norm:
+        # Make sum of each kernel as 1
+        normalized_kernel /= normalized_kernel.sum()
+
+    return normalized_kernel
+
+    
 def blurimg(img,kernel):
     chl_l = []
     for i in range(3):
@@ -104,7 +129,7 @@ def process(img,coord_map):
 
     # img = color_jet(img)
 
-    noise_level = np.random.random() * 0.02
+    noise_level = np.random.random() * 0.2
     noise = np.random.normal(0.0, noise_level*255, (H,W,C))
     img_processed = np.clip(img + noise,0,255)
 
@@ -128,7 +153,7 @@ def process(img,coord_map):
 
     img_processed = reposition(img_processed,ratio = 0.15)
 
-    img_processed = multiple_blur(img_processed,3)
+    # img_processed = multiple_blur(img_processed,3)
 
     return img_processed,jpeg_quality*0.01,noise_level*90
 def reposition(img,ratio = 0.08):
